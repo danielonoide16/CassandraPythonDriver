@@ -3,9 +3,29 @@ from cassandra.cluster import Cluster
 # ==============================
 # CQL Statements
 # ==============================
-CREATE_KEYSPACE = ""
-CREATE_TABLE_MOVIE_BY_TITLE = ""
-CREATE_TABLE_MOVIE_BY_GENRE = ""
+CREATE_KEYSPACE = "CREATE KEYSPACE IF NOT EXISTS movies WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}"
+CREATE_TABLE_MOVIE_BY_TITLE = """
+CREATE TABLE IF NOT EXISTS movies.movie_by_title (
+    movie_id uuid,
+    title text,
+    release_year int,
+    genre text, 
+    rating float,
+    director text,
+    PRIMARY KEY (title, release_year)
+)
+"""
+CREATE_TABLE_MOVIE_BY_GENRE = """
+CREATE TABLE IF NOT EXISTS movies.movie_by_genre (
+    movie_id uuid,
+    title text,
+    release_year int,
+    genre text, 
+    rating float,
+    director text,
+    PRIMARY KEY (genre, rating)
+) WITH CLUSTERING ORDER BY (rating DESC);
+"""
 INSERT_MOVIE_TITLE = ""
 INSERT_MOVIE_GENRE = ""
 DELETE_MOVIE_TITLE = ""
