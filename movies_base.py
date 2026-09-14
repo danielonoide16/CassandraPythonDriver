@@ -1,3 +1,5 @@
+from gevent import monkey
+monkey.patch_all()
 from cassandra.cluster import Cluster
 
 # ==============================
@@ -26,12 +28,20 @@ CREATE TABLE IF NOT EXISTS movies.movie_by_genre (
     PRIMARY KEY (genre, rating)
 ) WITH CLUSTERING ORDER BY (rating DESC);
 """
-INSERT_MOVIE_TITLE = ""
-INSERT_MOVIE_GENRE = ""
-DELETE_MOVIE_TITLE = ""
-DELETE_MOVIE_GENRE = ""
-SELECT_BY_TITLE = ""
-SELECT_BY_GENRE = ""
+INSERT_MOVIE_TITLE = """
+    INSERT INTO movies.movie_by_title (movie_id, title, release_year, genre, rating, director)
+    VALUES (uuid(), %s, %s, %s, %s, %s)
+"""
+INSERT_MOVIE_GENRE = """
+    INSERT INTO movies.movie_by_genre (movie_id, title, release_year, genre, rating, director)
+    VALUES (uuid(), %s, %s, %s, %s, %s)
+"""
+UPDATE_MOVIE_TITLE = "UPDATE movies.movie_by_title SET director = %s WHERE title = %s AND release_year = %s"
+UPDATE_MOVIE_GENRE = "UPDATE movies.movie_by_genre SET director = %s WHERE genre = %s AND rating = %s"
+DELETE_MOVIE_TITLE = "DELETE FROM movies.movie_by_title WHERE title = %s AND release_year = %s"
+DELETE_MOVIE_GENRE = "DELETE FROM movies.movie_by_genre WHERE genre = %s AND rating = %s"
+SELECT_BY_TITLE = "SELECT * FROM movies.movie_by_title WHERE title = %s AND release_year = %s"
+SELECT_BY_GENRE = "SELECT * FROM movies.movie_by_genre WHERE genre = %s"
 
 # ==============================
 # Funciones base
